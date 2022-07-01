@@ -4,11 +4,12 @@ const config=require('config');
 const connecToAtlas=require('./config/db_connect');
 const app=express();
 
+app.use(express.json({extended:false}));
+
 app.use('/api/user',require('./routes/api/user'));
 app.use('/api/posts',require('./routes/api/posts'));
 app.use('/api/profile',require('./routes/api/profile'));
 app.use('/api/auth',require('./routes/api/auth'));
-
 
 connecToAtlas();
 
