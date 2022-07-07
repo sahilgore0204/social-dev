@@ -64,12 +64,12 @@ const profileSchema=new mongoose.Schema({
             description:String
         }
     ],
-    socail:{
+    social:{
         youtube:String,
         twitter:String,
         facebook:String,
-        Instagram:String,
-        LinkedIn:String
+        instagram:String,
+        linkedIn:String
     },
     created_at:{
         type:Date,
@@ -78,5 +78,4 @@ const profileSchema=new mongoose.Schema({
 });
 
 const Profile=mongoose.model('Profile',profileSchema);
-
-modules.exports=Profile;
+module.exports=Profile;
