@@ -3,6 +3,7 @@ const router=express.Router();
 const auth=require('../../middleware/auth');
 const {check,validationResult}=require('express-validator');
 const Profile=require('../../models/Profile');
+const User=require('../../models/Users');
 //api endpoint: api/profile
 
 //gets a list of all profiles (public)
@@ -119,6 +120,22 @@ router.get('/me',auth,async (req,res)=>{
     catch(err){
         console.log(err.message);
         return res.status(401).json({errors:[{message:err.message}]});
+    }
+})
+
+//api to delete all stuff related to user(user,profile,posts)(private)
+
+router.delete('/',auth,async (req,res)=>{
+    try{
+        let profile=await Profile.findOneAndRemove({user:req.user.user_id});
+        if(!profile)
+        res.status(401).send("user deleted already");
+        let user=await User.findByIdAndRemove(req.user.user_id);
+        return res.send("User deleted successfully");
+    }
+    catch(err){
+        console.log(err.message);
+        res.status(401).json({errors:[{"message":err.message}]});
     }
 })
 
