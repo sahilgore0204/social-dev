@@ -5,9 +5,30 @@ const {check,validationResult}=require('express-validator');
 const Profile=require('../../models/Profile');
 //api endpoint: api/profile
 
-//gets a lint of all profiles (public)
-router.get('/',(req,res)=>{
-    res.send("connected to profile endpoint")
+//gets a list of all profiles (public)
+router.get('/',async (req,res)=>{
+    try{
+        let allProfiles=await Profile.find().populate('user',['name','email']);
+        return res.send(allProfiles);
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
+//get profile by user id(public)
+
+router.get('/user/:user_id',async (req,res)=>{
+    try{
+        let profile=await Profile.findOne({user:req.params.user_id});
+        if(!profile)
+        throw Error("Profile not found");
+        res.send(profile);
+    }
+    catch(err){
+        console.log(err);
+        res.status(401).json({errors:[{message:"Profile not found"}]});
+    }
 })
 
 function buildProfile(postData){
@@ -91,6 +112,8 @@ router.get('/me',auth,async (req,res)=>{
     try{
         let user=req.user.user_id;
         let profile=await Profile.findOne({user}).populate('user',['name','email']);
+        if(!profile)
+        res.status(401).json({errors:[{message:"profile doesn't exists"}]})
         res.json(profile);
     }
     catch(err){
@@ -98,5 +121,6 @@ router.get('/me',auth,async (req,res)=>{
         return res.status(401).json({errors:[{message:err.message}]});
     }
 })
+
 
 module.exports=router;
