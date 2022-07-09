@@ -129,12 +129,42 @@ router.delete('/',auth,async (req,res)=>{
     try{
         let profile=await Profile.findOneAndRemove({user:req.user.user_id});
         if(!profile)
-        res.status(401).send("user deleted already");
+        return res.status(401).send("user deleted already");
         let user=await User.findByIdAndRemove(req.user.user_id);
         return res.send("User deleted successfully");
     }
     catch(err){
         console.log(err.message);
+        res.status(401).json({errors:[{"message":err.message}]});
+    }
+})
+
+//api endpoint to add user experience(private)
+// at a time only single experience is sent to the server
+
+router.put('/experience',[auth,[
+    check('title').not().isEmpty(),
+    check('company').not().isEmpty(),
+    check('from').not().isEmpty(),
+    check('current').not().isEmpty()
+]],async (req,res)=>{
+    let errors=validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(401).json({errors:errors.array()});
+    }
+    try{
+        let user=req.user.user_id;
+        let profile=await Profile.findOne({user});
+        //here also same bug
+        if(!profile)
+        return res.status(401).json({errors:[{"message":"User doesn't exists"}]});
+        profile.experience.unshift(req.body);
+        //console.log(profile);
+        await profile.save();
+        res.send("experience added successfully");
+    }
+    catch(err){
+        console.log(err);
         res.status(401).json({errors:[{"message":err.message}]});
     }
 })
