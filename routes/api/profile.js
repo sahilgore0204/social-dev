@@ -60,11 +60,12 @@ router.post('/',[auth,[
     check('skills','skills are required').not().isEmpty()
 ]],async (req,res)=>{
     const errors=validationResult(req);
+    if(!errors.isEmpty())
+        return res.status(500).json({errors:errors.array()});
     try{
         let profile=await Profile.findOne({user:req.user.user_id});
         if(!profile){
-            if(!errors.isEmpty())
-            return res.status(500).json({errors:errors.array()});
+            //creating the profile
             let profileFields=buildProfile(req.body);
             profileFields.user=req.user.user_id;
             //console.log(profileFields);
@@ -72,7 +73,11 @@ router.post('/',[auth,[
             return res.json("new profile created successfully");
         }
         else{
-            res.send("profile already present,updating it");
+            //updating the profile
+            let user=req.user.user_id;
+            let profileFields=buildProfile(req.body);
+            let profile= await Profile.findOneAndUpdate({user},{$set:profileFields});
+            res.send("profile updated successfully");
         }
     }
     catch(err){
