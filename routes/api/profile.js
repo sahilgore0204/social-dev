@@ -169,5 +169,28 @@ router.put('/experience',[auth,[
     }
 })
 
+//api for deleteing experience through experience_id;
+//endpoint: api/profile/experience/:experience_id (delete)
+//private
+
+router.delete('/experience/:exp_id',auth,async (req,res)=>{
+    try{
+        let profile =await Profile.findOne({user:req.user.user_id});
+
+        //find experience with given id;
+        //console.log(profile);
+        let exp=profile.experience.find(exp=>exp.id==req.params.exp_id);
+        if(!exp)
+        throw Error("Experience with given id doesn't exists");
+        let expIndex=profile.experience.indexOf(exp);
+        profile.experience.splice(expIndex,1);
+        await profile.save();
+        res.json("experience deleted successfully");
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(401).json({errors:[{"message":err.message}]});
+    }
+})
 
 module.exports=router;
