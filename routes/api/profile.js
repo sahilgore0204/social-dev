@@ -193,4 +193,44 @@ router.delete('/experience/:exp_id',auth,async (req,res)=>{
     }
 })
 
+//api for adding a education(private)
+router.put('/education',[auth,[
+    check('school','School name is required').not().isEmpty(),
+    check('degree','Degree is required').not().isEmpty(),
+    check('from','Starting  date required').not().isEmpty(),
+    check('current','Current required').not().isEmpty()
+]],async (req,res)=>{
+    let errors=validationResult(req);
+    if(!errors.isEmpty())
+    return res.status(401).json({errors:errors.array()});
+    try {
+        let profile=await Profile.findOne({user:req.user.user_id});
+        profile.education.unshift(req.body);
+        await profile.save();
+        res.send('education added successfully');
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({errors:[{"message":error.message}]});
+    }
+})
+
+//api to delete education from id(private)
+
+router.delete('/education/:edu_id',auth,async (req,res)=>{
+    try {
+        let id=req.params.edu_id;
+        let profile=await Profile.findOne({user:req.user.user_id});
+        let edu=profile.education.find(edu_item=>edu_item.id==id);
+        if(!edu)
+        throw Error("Education with given id doesn't exists");
+        let eduIndex=profile.education.indexOf(edu);
+        profile.education.splice(eduIndex,1);
+        await profile.save();
+        res.send("education deleted successfully");
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({errors:[{"message":error.message}]});
+    }
+})
+
 module.exports=router;
