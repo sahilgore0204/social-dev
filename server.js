@@ -1,7 +1,6 @@
 const express=require('express');
 //const mongoose=require('mongoose');
-const config=require('config');
-const connecToAtlas=require('./config/db_connect');
+const connecToAtlas=require('./db_connect');
 const app=express();
 
 app.use(express.json({extended:false}));
