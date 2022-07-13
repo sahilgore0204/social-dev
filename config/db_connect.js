@@ -1,9 +1,9 @@
 const mongoose=require('mongoose');
-const config=require('config');
+require('dotenv').config();
 
 let connectToAtlas=async ()=>{
     try{
-        await mongoose.connect(config.get('mongoURI'));
+        await mongoose.connect(process.env.mongoURI);
         console.log("connected to atlas..");
     }
     catch(err){

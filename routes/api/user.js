@@ -5,7 +5,7 @@ const User=require('../../models/Users');
 const gravatar=require('gravatar');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
-const config=require('config');
+require('dotenv').config();
 //api endpoint api/user
 //for registering users
 
@@ -67,7 +67,7 @@ router.post('/',[
         let payload={
             user_id:newUser.id
         }
-        let id_token=jwt.sign(payload,config.get('jwtSecret'),{
+        let id_token=jwt.sign(payload,process.env.jwtSecret,{
             expiresIn:3600000
         });
 

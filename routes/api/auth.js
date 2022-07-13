@@ -5,7 +5,7 @@ const {check,validationResult}=require('express-validator');
 const bcrypt=require('bcryptjs');
 const User=require('../../models/Users');
 const jwt=require('jsonwebtoken');
-const config=require('config');
+require('dotenv').config();
 //api endpoint api/auth
 
 //api to verify jwt
@@ -37,7 +37,7 @@ router.post('/',[
         let payload={
             user_id:user.id
         }
-        let id_token=jwt.sign(payload,config.get('jwtSecret'),{
+        let id_token=jwt.sign(payload,process.env.jwtSecret,{
             expiresIn:3600000
         })
         res.send(id_token);
