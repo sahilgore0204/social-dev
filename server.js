@@ -3,6 +3,13 @@ const express=require('express');
 const connecToAtlas=require('./db_connect');
 const app=express();
 
+//very important piece of code to disable cors
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 app.use(express.json({extended:false}));
 
 app.use('/api/user',require('./routes/api/user'));

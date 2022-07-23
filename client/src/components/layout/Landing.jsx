@@ -1,5 +1,5 @@
 import React,{Fragment} from 'react';
-
+import { Link } from 'react-router-dom';
 export default function Landing(){
     return (
         <section className="landing">
@@ -11,8 +11,8 @@ export default function Landing(){
                 other developers
                 </p>
                 <div className="buttons">
-                <a href="register.html" className="btn btn-primary">Sign Up</a>
-                <a href="login.html" className="btn btn-light">Login</a>
+                <Link to='register' className='btn btn-primary'>Register</Link>
+                <Link to='login' className='btn btn-light'>Login</Link>
                 </div>
             </div>
             </div>
