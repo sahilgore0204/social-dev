@@ -7,6 +7,12 @@ import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom';
 import Login from './components/auth/Login';
 import AuthContext from './components/context/auth-context';
 import DashBoard from './components/Dashboard';
+import CreateProfile from './components/Create/CreateProfile';
+import AddEducation from './components/Create/AddEducation';
+import AddExperience from './components/Create/AddExperience';
+import Logout from './components/auth/Logout';
+import Developers from './components/View/Developers';
+import Posts from './components/View/Posts';
 function App() {
   let [jwt,setJwt]=useState('');
   return (
@@ -18,6 +24,12 @@ function App() {
             <Route path='/register' element={<Register/>} />
             <Route path='/login' element={<Login/>} />
             <Route path='/dashboard' element={<DashBoard/>} />
+            <Route path='/edit-profile' element={<CreateProfile/>} />
+            <Route path='/add-experience' element={<AddExperience/>} />
+            <Route path='/add-education' element={<AddEducation/>} />
+            <Route path='/profiles' element={<Developers/>} />
+            <Route path='/posts' element={<Posts/>} />
+            <Route path='/logout' element={<Logout/>} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

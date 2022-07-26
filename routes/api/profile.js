@@ -85,7 +85,7 @@ router.post('/',[auth,[
 ]],async (req,res)=>{
     const errors=validationResult(req);
     if(!errors.isEmpty())
-        return res.status(500).json({errors:errors.array()});
+        return res.json({errors:errors.array()});
     try{
         let profile=await Profile.findOne({user:req.user.user_id});
         if(!profile){
