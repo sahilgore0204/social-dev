@@ -22,17 +22,17 @@ router.post('/',[
 ],async (req,res)=>{
     let errors=validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(401).json({errors:errors.array()});
+        return res.json({errors:errors.array()});
     }
     try{
         let {email,password}=req.body;
         let user=await User.findOne({email});
         if(!user){
-            return res.status(401).json({errors:[{'message':"Invalid credentials"}]});
+            return res.json({errors:[{'message':"Invalid credentials"}]});
         }
         let compare=await bcrypt.compare(password,user.password);
         if(!compare){
-            return res.status(401).json({errors:[{'message':"Invalid credentials"}]});
+            return res.json({errors:[{'message':"Invalid credentials"}]});
         }
         let payload={
             user_id:user.id
@@ -44,7 +44,7 @@ router.post('/',[
     }
     catch(err){
         console.log(err);
-        res.status(401).json({errors:[{'message':err.message}]});
+        res.json({errors:[{'message':err.message}]});
     }
 })
 

@@ -575,3 +575,10 @@ button {
     padding: 0.3rem 0.4rem;
   }
 }
+
+.msg-btn{
+  background-color:#dc3545;
+  float: right;
+  border: none;
+  cursor: pointer;
+}

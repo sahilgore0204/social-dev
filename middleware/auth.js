@@ -16,7 +16,7 @@ async function authMiddleware(req,res,next){
     }
     catch(err){
         console.log(err.message);
-        res.status(401).json({"errors":[{
+        res.json({"errors":[{
             "message":err.message
         }]})
     }

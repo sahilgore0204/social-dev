@@ -20,7 +20,7 @@ router.post('/',[
 ],async (req,res)=>{
     const errors=validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(400).json({errors:errors.array()});
+        return res.json({errors:errors.array()});
     }
     //lets check if user with email already exists
     //email should be unique as we use it to uniquely identfy user

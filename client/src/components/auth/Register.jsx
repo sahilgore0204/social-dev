@@ -1,6 +1,8 @@
-import React,{Fragment,useState} from "react";
-import { Link } from "react-router-dom";
+import React,{useContext,useState} from "react";
+import { Link, Navigate } from "react-router-dom";
 import axios from 'axios'
+import Errors from "../Errors";
+import AuthContext from "../context/auth-context";
 export default function Register(){
     const [registerInfo,setRegisterInfo]=useState({
         name:'',
@@ -8,6 +10,8 @@ export default function Register(){
         password:'',
         password2:'',
     });
+    const [errmessage,setErrMessage]=useState('');
+    const auth=useContext(AuthContext);
     function handleChange(event){
         const {name,value}=event.target;
         //console.log(name,value);
@@ -38,13 +42,23 @@ export default function Register(){
             try {
                 let response=await axios.post('http://localhost:5000/api/user',data,config);
                 console.log(response.data);
+                if(response.data.errors){
+                    throw Error(response.data.errors[0].message || response.data.errors[0].msg);
+                }
+                else{
+                    setErrMessage('');
+                    auth.setJwt(response.data);
+                }
             } catch (err) {
+                setErrMessage(String(err.message));
                 console.log(err.message);
             }
         }
     }
     return (
     <section className="container">
+        {errmessage.length>0 && <Errors resetError={setErrMessage}>{errmessage}</Errors>}
+        {auth.jwt.length!==0 && <Navigate to='/dashboard'/>}
         <h1 className="large text-primary">Sign Up</h1>
         <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
         <form onSubmit={handleSubmit} className="form">
