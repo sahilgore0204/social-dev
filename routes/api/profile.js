@@ -147,7 +147,8 @@ router.delete('/',auth,async (req,res)=>{
 router.put('/experience',[auth,[
     check('title').not().isEmpty(),
     check('company').not().isEmpty(),
-    check('from').not().isEmpty()
+    check('from').not().isEmpty(),
+    check('current','Current required').not().isEmpty()
 ]],async (req,res)=>{
     let errors=validationResult(req);
     if(!errors.isEmpty()){
@@ -190,7 +191,7 @@ router.delete('/experience/:exp_id',auth,async (req,res)=>{
     }
     catch(err){
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 })
 
@@ -203,7 +204,7 @@ router.put('/education',[auth,[
 ]],async (req,res)=>{
     let errors=validationResult(req);
     if(!errors.isEmpty())
-    return res.status(401).json({errors:errors.array()});
+    return res.json({errors:errors.array()});
     try {
         let profile=await Profile.findOne({user:req.user.user_id});
         profile.education.unshift(req.body);
@@ -211,7 +212,7 @@ router.put('/education',[auth,[
         res.send('education added successfully');
     } catch (error) {
         console.log(error);
-        res.status(401).json({errors:[{"message":error.message}]});
+        res.json({errors:[{"message":error.message}]});
     }
 })
 

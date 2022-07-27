@@ -27,8 +27,7 @@ export default function AddExperience() {
             if(len)
             cleanData[key]=data[key];
         }
-        if(current)
-        cleanData['current']=true;
+        cleanData['current']=current
         return cleanData;
     }
     async function handleSubmit(event){
