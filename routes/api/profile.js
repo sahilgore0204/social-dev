@@ -106,7 +106,7 @@ router.post('/',[auth,[
     }
     catch(err){
         console.log(err.message);
-        res.status(500).json({errors:[{message:err.message}]});
+        res.json({errors:[{message:err.message}]});
     }
 })
 
@@ -116,12 +116,12 @@ router.get('/me',auth,async (req,res)=>{
         let user=req.user.user_id;
         let profile=await Profile.findOne({user}).populate('user',['name','email']);
         if(!profile)
-        res.status(401).json({errors:[{message:"profile doesn't exists"}]})
+        res.json({errors:[{message:"profile doesn't exists"}]})
         res.json(profile);
     }
     catch(err){
         console.log(err.message);
-        return res.status(401).json({errors:[{message:err.message}]});
+        return res.json({errors:[{message:err.message}]});
     }
 })
 
@@ -147,19 +147,18 @@ router.delete('/',auth,async (req,res)=>{
 router.put('/experience',[auth,[
     check('title').not().isEmpty(),
     check('company').not().isEmpty(),
-    check('from').not().isEmpty(),
-    check('current').not().isEmpty()
+    check('from').not().isEmpty()
 ]],async (req,res)=>{
     let errors=validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(401).json({errors:errors.array()});
+        return res.json({errors:errors.array()});
     }
     try{
         let user=req.user.user_id;
         let profile=await Profile.findOne({user});
         //here also same bug
         if(!profile)
-        return res.status(401).json({errors:[{"message":"User doesn't exists"}]});
+        return res.json({errors:[{"message":"User doesn't exists"}]});
         profile.experience.unshift(req.body);
         //console.log(profile);
         await profile.save();
@@ -167,7 +166,7 @@ router.put('/experience',[auth,[
     }
     catch(err){
         console.log(err);
-        res.status(401).json({errors:[{"message":err.message}]});
+        res.json({errors:[{"message":err.message}]});
     }
 })
 
