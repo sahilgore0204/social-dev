@@ -131,13 +131,13 @@ router.delete('/',auth,async (req,res)=>{
     try{
         let profile=await Profile.findOneAndRemove({user:req.user.user_id});
         if(!profile)
-        return res.status(401).send("user deleted already");
+        return res.send("user deleted already");
         let user=await User.findByIdAndRemove(req.user.user_id);
         return res.send("User deleted successfully");
     }
     catch(err){
         console.log(err.message);
-        res.status(401).json({errors:[{"message":err.message}]});
+        res.json({errors:[{"message":err.message}]});
     }
 })
 
@@ -231,7 +231,7 @@ router.delete('/education/:edu_id',auth,async (req,res)=>{
         res.send("education deleted successfully");
     } catch (error) {
         console.log(error);
-        res.status(401).json({errors:[{"message":error.message}]});
+        res.json({errors:[{"message":error.message}]});
     }
 })
 

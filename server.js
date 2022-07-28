@@ -1,13 +1,16 @@
 const express=require('express');
 //const mongoose=require('mongoose');
+const cors=require('cors');
 const connecToAtlas=require('./db_connect');
 const app=express();
 
 //very important piece of code to disable cors
+app.options('*',cors());
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,x-auth-token");
-    res.header("Access-Control-Allow-Methods","*")
+    res.header("Access-Control-Allow-Methods","POST,GET,PUT,DELETE")
+    res.header("status","ok");
     next();
   });
 
