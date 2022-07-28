@@ -1,5 +1,8 @@
-import React from "react";
-
+import React,{useContext} from "react";
+import AuthContext from "../context/auth-context";
+import Protect from './Protect'
 export default function Logout(){
-    return <div>Logging-out</div>
+    const auth=useContext(AuthContext);
+    auth.setJwt('');
+    return <Protect jwt={auth.jwt} />
 }

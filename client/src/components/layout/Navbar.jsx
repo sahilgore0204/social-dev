@@ -10,9 +10,9 @@ export default function Navbar() {
             </h1>
             <ul>
                 <li><Link to="/profiles">Developers</Link></li>
-                {auth.jwt.length!==0?<Fragment><li><Link to="/posts">Posts</Link></li>
+                <li><Link to="/posts">Posts</Link></li>
+                {auth.jwt.length!==0?<Fragment>
                 <li><Link to="/logout">Logout</Link></li></Fragment>:<Fragment>
-                <li><Link to="/register">Register</Link></li>
                 <li><Link to="/login">Login</Link></li>
                 </Fragment>}
             </ul>

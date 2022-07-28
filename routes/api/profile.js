@@ -11,7 +11,7 @@ require('dotenv').config();
 //gets a list of all profiles (public)
 router.get('/',async (req,res)=>{
     try{
-        let allProfiles=await Profile.find().populate('user',['name','email']);
+        let allProfiles=await Profile.find().populate('user',['name','email','avatar']);
         return res.send(allProfiles);
     }
     catch(err){
@@ -30,7 +30,7 @@ router.get('/user/:user_id',async (req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.status(401).json({errors:[{message:"Profile not found"}]});
+        res.json({errors:[{message:"Profile not found"}]});
     }
 })
 

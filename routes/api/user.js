@@ -40,7 +40,7 @@ router.post('/',[
         // grab the gravatar url
         let avatar=gravatar.url(email,{
             's':'200',
-            'd':'mp',
+            'd':'wavatar',
             'r':'pg'
         });
 
