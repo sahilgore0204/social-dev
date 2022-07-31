@@ -9,11 +9,11 @@ const { application } = require('express');
 //get all post by all users(public)
 router.get('/',async (req,res)=>{
     try {
-        let posts=await Posts.find().populate('user',['name']);
+        let posts=await Posts.find().populate('user',['name','avatar']);
         return res.json(posts);
     } catch (err) {
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 })
 

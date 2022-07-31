@@ -271,7 +271,7 @@ router.get('/github/:username',async (req,res)=>{
                     'Authorization':`token ${access_token}`
                 }
             });
-            res.json(repoResponse.headers);
+            res.json(repoResponse.data);
         }
     } catch (err) {
         console.log(err.message);
