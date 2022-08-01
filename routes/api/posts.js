@@ -71,11 +71,11 @@ router.delete('/post/:post_id',auth,async (req,res)=>{
         let user_id=req.user.user_id;
         let post=await Posts.findOneAndRemove({user:user_id,_id:post_id});
         if(!post)
-        throw Error("Post doesn't exists");
-        return res.json(post);
+        throw Error("Post doesn't exists or you are not authorize to delete it");
+        return res.json("post deleted succcessfully");
     } catch (err) {
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 });
 
@@ -109,7 +109,7 @@ router.put('/like/:post_id',auth,async (req,res)=>{
         }
     } catch (err) {
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 });
 
@@ -142,7 +142,7 @@ router.put('/dislike/:post_id',auth,async (req,res)=>{
         }
     } catch (err) {
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 });
 

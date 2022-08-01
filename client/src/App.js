@@ -13,6 +13,7 @@ import AddExperience from './components/Create/AddExperience';
 import Logout from './components/auth/Logout';
 import Developers from './components/View/Developers';
 import Posts from './components/View/Posts';
+import Post from './components/View/Post';
 function App() {
   let [jwt,setJwt]=useState('');
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path='/profiles' element={<Developers/>} />
             <Route path='/posts' element={<Posts/>} />
             <Route path='/logout' element={<Logout/>} />
+            <Route path='/post' element={<Post/>} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

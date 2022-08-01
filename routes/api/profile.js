@@ -5,6 +5,7 @@ const {check,validationResult}=require('express-validator');
 const Profile=require('../../models/Profile');
 const User=require('../../models/Users');
 const axios=require('axios');
+const Posts = require('../../models/Posts');
 require('dotenv').config();
 //api endpoint: api/profile
 
@@ -132,6 +133,7 @@ router.delete('/',auth,async (req,res)=>{
         let profile=await Profile.findOneAndRemove({user:req.user.user_id});
         if(!profile)
         return res.send("user deleted already");
+        let posts=await Posts.deleteMany({user:req.user.user_id})
         let user=await User.findByIdAndRemove(req.user.user_id);
         return res.send("User deleted successfully");
     }

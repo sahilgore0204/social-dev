@@ -588,3 +588,7 @@ button {
   width: 70%;
   margin-bottom: 5px;
 }
+
+i{
+  pointer-events: none;
+}

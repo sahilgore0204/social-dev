@@ -2,11 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import Errors from "../Errors";
 import AuthContext from '../context/auth-context'
 import axios from "axios";
+import {Link} from 'react-router-dom'
 export default function Posts() {
     let jwt = useContext(AuthContext).jwt;
+    //console.log(jwt);
     const [postInfo, setPostInfo] = useState({ title: '', description: '' });
     const [errMessage, setErrorMessage] = useState('');
     const [allPosts, setAllPosts] = useState([]);
+    const [refetch, setRefetch] = useState(false);
     useEffect(() => {
         //fetch all the post from /api/posts
         const fetchPosts = async () => {
@@ -23,8 +26,41 @@ export default function Posts() {
             }
         }
         fetchPosts();
-    }, []);
+    }, [refetch]);
 
+
+    async function handleClick(event) {
+        const { name, id } = event.target
+        console.log(name, id);
+        if (jwt.length === 0) {
+            setErrorMessage('Please Login first');
+            return;
+        }
+        let url = '',response='';
+        let config = {
+            headers: {
+                'x-auth-token': jwt
+            }
+        }
+        try {
+            if (name === 'like' || name === 'dislike') {
+                url = `http://localhost:5000/api/posts/${name}/${id}`;
+                response = await axios.put(url, {}, config);
+            }
+            else if (name === 'delete') {
+                url = `http://localhost:5000/api/posts/post/${id}`;
+                response = await axios.delete(url,config);
+            }
+            if (response.data.errors)
+                throw Error(response.data.errors[0].message || response.data.errors[0].msg)
+            console.log(response.data);
+            setErrorMessage('');
+            setRefetch(!refetch);
+        } catch (err) {
+            console.log(err.message);
+            setErrorMessage(err.message);
+        }
+    }
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -51,6 +87,8 @@ export default function Posts() {
                 throw Error(response.data.errors[0].message || response.data.errors[0].msg);
             console.log(response.data);
             setErrorMessage('');
+            setRefetch(!refetch);
+            setPostInfo({ title: '', description: '' });
         } catch (err) {
             console.log(err.message);
             setErrorMessage(err.message);
@@ -98,29 +136,32 @@ export default function Posts() {
                             </a>
                         </div>
                         <div>
-                            <p className="my-1">
+                            <h1 className="my-1">
                                 {post.title}
-                            </p>
+                            </h1>
                             <p className="my-1">
                                 {post.description}
                             </p>
                             <p className="post-date">
-                                Posted on {post.date.substring(0,10)}
+                                Posted on {post.date.substring(0, 10)}
                             </p>
-                            <button type="button" className="btn btn-light">
-                                <i className="fas fa-thumbs-up"></i>
-                                <span>{post.likes.length}</span>
+                            <button onClick={handleClick} name="like" id={post._id} type="button" className="btn btn-light">
+                                {/* button for like/unlike */}
+                                <i className="fas fa-thumbs-up">{post.likes.length}</i>
                             </button>
-                            <button type="button" className="btn btn-light">
+                            <button onClick={handleClick} name="dislike" id={post._id} type="button" className="btn btn-light">
+                                {/* button for dislike/undislike */}
                                 <i className="fas fa-thumbs-down">{post.dislikes.length}</i>
                             </button>
-                            <a href="post.html" className="btn btn-primary">
+                            <Link to="/post" className="btn btn-primary">
                                 Discussion <span className='comment-count'>{post.comments.length}</span>
-                            </a>
+                            </Link>
                             <button
                                 type="button"
                                 className="btn btn-danger"
                                 id={post._id}
+                                name="delete"
+                                onClick={handleClick}
                             >
                                 <i className="fas fa-times"></i>
                             </button>
@@ -128,46 +169,6 @@ export default function Posts() {
                     </div>
                 )
             })}
-
-            {/* <div className="post bg-white p-1 my-1">
-                <div>
-                    <a href="profile.html">
-                        <img
-                            className="round-img"
-                            src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200"
-                            alt=""
-                        />
-                        <h4>John Doe</h4>
-                    </a>
-                </div>
-                <div>
-                    <p className="my-1">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint
-                        possimus corporis sunt necessitatibus! Minus nesciunt soluta
-                        suscipit nobis. Amet accusamus distinctio cupiditate blanditiis
-                        dolor? Illo perferendis eveniet cum cupiditate aliquam?
-                    </p>
-                    <p className="post-date">
-                        Posted on 04/16/2019
-                    </p>
-                    <button type="button" className="btn btn-light">
-                        <i className="fas fa-thumbs-up"></i>
-                        <span>4</span>
-                    </button>
-                    <button type="button" className="btn btn-light">
-                        <i className="fas fa-thumbs-down"></i>
-                    </button>
-                    <a href="post.html" className="btn btn-primary">
-                        Discussion <span className='comment-count'>3</span>
-                    </a>
-                    <button
-                        type="button"
-                        className="btn btn-danger"
-                    >
-                        <i className="fas fa-times"></i>
-                    </button>
-                </div>
-            </div> */}
         </div>
-    </section >)
+    </section>)
 }
