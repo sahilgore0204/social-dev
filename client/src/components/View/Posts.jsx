@@ -153,7 +153,7 @@ export default function Posts() {
                                 {/* button for dislike/undislike */}
                                 <i className="fas fa-thumbs-down">{post.dislikes.length}</i>
                             </button>
-                            <Link to="/post" className="btn btn-primary">
+                            <Link to={`/post/${post._id}`} className="btn btn-primary">
                                 Discussion <span className='comment-count'>{post.comments.length}</span>
                             </Link>
                             <button

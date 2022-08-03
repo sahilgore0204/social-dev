@@ -3,7 +3,7 @@ const router=express.Router();
 const auth=require('../../middleware/auth');
 const Posts=require('../../models/Posts');
 const {check,validationResult}=require('express-validator');
-const { application } = require('express');
+const { application, response } = require('express');
 
 //api endpoint api/posts
 //get all post by all users(public)
@@ -41,13 +41,13 @@ router.post('/',[auth,[
 router.get('/post/:post_id',async (req,res)=>{
     try {
         let post_id=req.params.post_id;
-        let post=await Posts.findById(post_id);
+        let post=await Posts.findById(post_id).populate('user',['name','avatar']).populate('comments.user',['name','avatar']);
         if(!post)
         throw Error("Post doesn't exists");
         return res.json(post);
     } catch (err) {
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 })
 //get all the posts of the users
@@ -152,7 +152,7 @@ router.put('/comment/:post_id',[auth,
     async (req,res)=>{
         let errors=validationResult(req);
         if(!errors.isEmpty())
-        return res.status(401).json({errors:errors.array()});
+        return res.json({errors:errors.array()});
         try {
             let id=req.params.post_id,user=req.user.user_id;
             let post =await Posts.findById(id);
@@ -164,7 +164,7 @@ router.put('/comment/:post_id',[auth,
             res.send("comment saved successfully");
         } catch (err) {
             console.log(err.message);
-            return res.status(401).json({errors:[{"message":err.message}]});
+            return res.json({errors:[{"message":err.message}]});
         }
     })
 
@@ -175,18 +175,14 @@ router.delete('/comment/:comment_id',auth,async (req,res)=>{
         let id=req.params.comment_id,user=req.user.user_id;
         let post=await Posts.findOne({'comments._id':id});
         if(!post)
-        return res.send("post doesn't exists");
+        throw Error("post doesn't exists")
         //first check if the same user has made the comment
-        let ind=-1;
-        let comment=post.comments.find((comment,index)=>{
-            if(comment.id===id){
-                ind=index;
-                return true;
-            }
-            return false;
-        });
-        if(comment.user!=user){
-            return res.send("you are not allowed to delete this comment");
+        //res.json(post);
+        let ind=post.comments.findIndex((comment)=>{
+            return (comment.id==id && comment.user==user);
+        })
+        if(ind===-1){
+            throw Error("Either comment doesn't exists or you are not allowed to delete this comment");
         }
         //now you can delete the comment
         post.comments.splice(ind,1);
@@ -194,7 +190,7 @@ router.delete('/comment/:comment_id',auth,async (req,res)=>{
         return res.send("comment deleted successfully");
     } catch (err) {
         console.log(err.message);
-        return res.status(401).json({errors:[{"message":err.message}]});
+        return res.json({errors:[{"message":err.message}]});
     }
 })
 module.exports=router;

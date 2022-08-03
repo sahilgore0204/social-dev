@@ -31,7 +31,7 @@ function App() {
             <Route path='/profiles' element={<Developers/>} />
             <Route path='/posts' element={<Posts/>} />
             <Route path='/logout' element={<Logout/>} />
-            <Route path='/post' element={<Post/>} />
+            <Route path='/post/:post_id' element={<Post/>} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>

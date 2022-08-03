@@ -10,8 +10,7 @@ require('dotenv').config();
 
 //api to verify jwt
 router.get('/',auth,(req,res)=>{
-    console.log(req.user);
-    res.send("connected to auth endpoint")
+    res.send(req.user.user_id);
 })
 
 //post api for Log-Inning the user
