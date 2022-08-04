@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 export default function Developers() {
     const [profileDetails, setProfileDetails] = useState([]);
     useEffect(() => {
@@ -32,9 +32,9 @@ export default function Developers() {
                             />
                             <div>
                                 <h2>{profile.user.name}</h2>
-                                <p>{profile.status} at {profile.company}</p>
+                                <p>{profile.status} {profile.company && `at ${profile.company}`}</p>
                                 <p>{profile.location}</p>
-                                <a href="profile.html" className="btn btn-primary">View Profile</a>
+                                <Link to={`/profile/${profile.user._id}`} className="btn btn-primary">View Profile</Link>
                             </div>
 
                             <ul>

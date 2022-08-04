@@ -24,14 +24,14 @@ router.get('/',async (req,res)=>{
 
 router.get('/user/:user_id',async (req,res)=>{
     try{
-        let profile=await Profile.findOne({user:req.params.user_id});
+        let profile=await Profile.findOne({user:req.params.user_id}).populate('user',['name','avatar']);
         if(!profile)
         throw Error("Profile not found");
         res.send(profile);
     }
     catch(err){
         console.log(err);
-        res.json({errors:[{message:"Profile not found"}]});
+        res.json({errors:[{message:err.message}]});
     }
 })
 

@@ -14,6 +14,7 @@ import Logout from './components/auth/Logout';
 import Developers from './components/View/Developers';
 import Posts from './components/View/Posts';
 import Post from './components/View/Post';
+import Developer from './components/View/Developer';
 function App() {
   let [jwt,setJwt]=useState('');
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path='/posts' element={<Posts/>} />
             <Route path='/logout' element={<Logout/>} />
             <Route path='/post/:post_id' element={<Post/>} />
+            <Route path='/profile/:user_id' element={<Developer/>} />
           </Routes>
         </AuthContext.Provider>
       </BrowserRouter>
