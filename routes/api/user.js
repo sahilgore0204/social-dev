@@ -70,8 +70,7 @@ router.post('/',[
         let id_token=jwt.sign(payload,process.env.jwtSecret,{
             expiresIn:3600000
         });
-
-        res.send(id_token);
+        res.cookie('user-jwt',id_token,{maxAge:36000000})
     }
     catch(err){
         console.log(err.message);

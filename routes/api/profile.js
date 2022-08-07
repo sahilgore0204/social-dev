@@ -6,6 +6,7 @@ const Profile=require('../../models/Profile');
 const User=require('../../models/Users');
 const axios=require('axios');
 const Posts = require('../../models/Posts');
+
 require('dotenv').config();
 //api endpoint: api/profile
 
@@ -241,43 +242,23 @@ router.delete('/education/:edu_id',auth,async (req,res)=>{
 //public(anyone can view any users repo)
 //user on befalf of whom request is send must first generate the access token for our application to make authenticated request(Oauth apps)
 
-router.get('/github/:username',async (req,res)=>{
+router.get('/github',async (req,res)=>{
+    console.log(req.query);
+    const {code,state}=req.query;
     try {
-        let code=req.query.code;
-        let userName=req.params.username;
-        if(!code){
-            //get the code;
-            //console.log("geeting code");
-            let redirect_uri=`http://localhost:5000/api/profile/github/${userName}`;
-            let getCodeUrl=`https://github.com/login/oauth/authorize?client_id=${process.env.github_client_id}&redirect_uri=${redirect_uri}`;
-            res.redirect(getCodeUrl);
+        const config={
+            headers:{
+                'Accept':'application/json'
+            }
         }
-        else{
-            //get the access token and then send authenticated request to /users/{username}/repos;
-            let response=await axios.get('https://github.com/login/oauth/access_token',{
-                headers:{
-                    'Accept':'application/json'
-                },
-                params:{
-                    code:code,
-                    client_id:process.env.github_client_id,
-                    client_secret:process.env.github_client_secret
-                }
-            });
-            let access_token=response.data.access_token;
-            //res.send(access_token);
-            let getRepoUrl=`https://api.github.com/users/${userName}/repos`;
-            let repoResponse=await axios.get(getRepoUrl,{
-                headers:{
-                    'Accept':'application/vnd.github+json',
-                    'Authorization':`token ${access_token}`
-                }
-            });
-            res.json(repoResponse.data);
-        }
+        const url=`https://github.com/login/oauth/access_token?client_id=${process.env.github_client_id}&client_secret=${process.env.github_client_secret}&code=${code}`
+        const response=await axios.post(url,{},config);
+        //res.send(response.data);
+        //use case for cookie
+        res.cookie('github_access_token',response.data.access_token,{maxAge:36000000}).redirect(`http://localhost:3000/profile/${state}`);
+
     } catch (err) {
-        console.log(err.message);
-        res.status(401).json({errors:[{"message":err.message}]});
+        res.send(err.message);
     }
 })
 module.exports=router;
