@@ -30,6 +30,7 @@ export default function Login(){
         if(response.data.errors){
           throw Error(response.data.errors[0].message || response.data.errors[0].msg);
         }
+        window.localStorage.setItem('jwt',response.data);
         auth.setJwt(response.data);
       } catch (err) {
         console.log(err.message);

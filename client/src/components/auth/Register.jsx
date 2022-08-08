@@ -47,6 +47,7 @@ export default function Register(){
                 }
                 else{
                     setErrMessage('');
+                    window.localStorage.setItem('jwt',response.data);
                     auth.setJwt(response.data);
                 }
             } catch (err) {

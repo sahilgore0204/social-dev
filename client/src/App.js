@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import './App.css';
 import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
@@ -15,8 +15,30 @@ import Developers from './components/View/Developers';
 import Posts from './components/View/Posts';
 import Post from './components/View/Post';
 import Developer from './components/View/Developer';
+import axios from 'axios';
 function App() {
-  let [jwt,setJwt]=useState('');
+  const [jwt,setJwt]=useState('');
+  useEffect(()=>{
+    const verifyJWT=async ()=>{
+      const jwt=window.localStorage.getItem('jwt');
+      console.log(jwt);
+      if(jwt!==null){
+        //verify it,because it may be expired;
+        try {
+          const response=await axios.get('http://localhost:5000/api/auth',{headers:{
+            'x-auth-token':jwt
+          }});
+          if(!response.data.errors){
+            setJwt(jwt);
+            console.log('jwt verified');
+          }
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+    }
+    verifyJWT();
+  },[]);
   return (
       <BrowserRouter>
         <AuthContext.Provider value={{jwt,setJwt}}>
